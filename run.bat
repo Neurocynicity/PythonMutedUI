@@ -1,0 +1,1 @@
+start pythonw "C:\Users\Owner\Documents\python\Mute_tool\Application.py"

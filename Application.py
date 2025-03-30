@@ -10,6 +10,9 @@ from PyQt5.QtWidgets import QMainWindow, QApplication
 from ClickableLabel import ClickableLabel
 from MicrophoneManager import MicrophoneManager
 
+import pathlib
+folderPath = pathlib.Path(__file__).parent.resolve()
+
 def Sign(num):
     return 1 if num >= 0 else -1
 
@@ -23,9 +26,9 @@ class MainWindow(QMainWindow):
         self.setAttribute(Qt.WA_NoSystemBackground, True)
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
 
-        self.mutedImage = "micMuted.png"
-        self.unmutedImage = "micUnmuted.png"
-        self.talkingImage = "talking.png"
+        self.mutedImage = str(folderPath.joinpath("micMuted.png"))
+        self.unmutedImage = str(folderPath.joinpath("micUnmuted.png"))
+        self.talkingImage = str(folderPath.joinpath("talking.png"))
 
         self.scale = 1
 
@@ -42,6 +45,8 @@ class MainWindow(QMainWindow):
         self.draggingWindow = False
         self.scalingWindow = False
 
+        self.mutedImageState = False
+
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.Update)
         self.timer.start(500)
@@ -50,8 +55,9 @@ class MainWindow(QMainWindow):
         mutedThisFrame = self.muteManager.muted
         self.muteManager.Update()
 
-        if mutedThisFrame != self.muteManager.muted:
+        if mutedThisFrame != self.mutedImageState:
             self.SetPixmap(self.mutedImage if self.muteManager.muted else self.unmutedImage)
+            self.mutedImageState = mutedThisFrame
         pass
 
     def SetTalking(self, talking):
